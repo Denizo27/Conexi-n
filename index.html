@@ -1,103 +1,12 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CRUD con Firebase</title>
-  <!-- Agrega la biblioteca Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-database.js"></script>
-  <script>
-    // Configura Firebase con tu configuración
-    const firebaseConfig = {
-      apiKey: "AIzaSyB1GPb_j52ofhoRnj6aNoVZeCZ3O1G-2R0",
-      authDomain: "cliente-2e4ed.firebaseapp.com",
-      projectId: "cliente-2e4ed",
-      storageBucket: "cliente-2e4ed.appspot.com",
-      messagingSenderId: "985696031261",
-      appId: "1:985696031261:web:b22834429ae86f67cb6cf4"
-    };
-
-    // Inicializa Firebase
-    firebase.initializeApp(firebaseConfig);
-
-    // Obtén una referencia a la base de datos
-    const database = firebase.database();
-  </script>
+  <title>Document</title>
 </head>
 <body>
-  <h1>CRUD con Firebase</h1>
-
-  <!-- Formulario para agregar registros -->
-  <form id="formulario">
-    <label for="apellido">Apellido:</label>
-    <input type="text" id="apellido" required>
-    <label for="direccion">Dirección:</label>
-    <input type="text" id="direccion" required>
-    <button type="submit">Agregar</button>
-  </form>
-
-  <!-- Contenedor para mostrar los registros -->
-  <div id="registros"></div>
-
-  <script>
-    const formulario = document.getElementById('formulario');
-    const registros = document.getElementById('registros');
-
-    formulario.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const apellido = formulario.apellido.value;
-      const direccion = formulario.direccion.value;
-
-      // Agrega el registro a la base de datos
-      database.ref('clientes').push({
-        apellido: apellido,
-        direccion: direccion
-      });
-
-      formulario.reset();
-    });
-
-    // Función para mostrar los registros
-    function mostrarRegistros() {
-      database.ref('clientes').on('value', (snapshot) => {
-        registros.innerHTML = '';
-        snapshot.forEach((childSnapshot) => {
-          const registro = childSnapshot.val();
-          const key = childSnapshot.key;
-          registros.innerHTML += `
-            <div>
-              <p>Apellido: ${registro.apellido}</p>
-              <p>Dirección: ${registro.direccion}</p>
-              <button onclick="editarRegistro('${key}', '${registro.apellido}', '${registro.direccion}')">Editar</button>
-              <button onclick="eliminarRegistro('${key}')">Eliminar</button>
-            </div>
-          `;
-        });
-      });
-    }
-
-    // Llama a la función para mostrar registros cuando la página cargue
-    mostrarRegistros();
-
-    // Función para eliminar un registro
-    function eliminarRegistro(key) {
-      database.ref(`clientes/${key}`).remove();
-    }
-
-    // Función para editar un registro
-    function editarRegistro(key, apellido, direccion) {
-      const nuevoApellido = prompt('Ingrese el nuevo apellido:', apellido);
-      const nuevaDireccion = prompt('Ingrese la nueva dirección:', direccion);
-
-      if (nuevoApellido && nuevaDireccion) {
-        database.ref(`clientes/${key}`).set({
-          apellido: nuevoApellido,
-          direccion: nuevaDireccion
-        });
-      }
-    }
-  </script>
+  <a href="pedido.html"></a>
 </body>
 </html>
 
