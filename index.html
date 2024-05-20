@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEDIDO</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4">Formulario de pedido</h2>
+        <form>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" placeholder="Nombre">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" class="form-control" id="apellido" placeholder="Apellido">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="edad">Edad</label>
+                    <input type="number" class="form-control" id="edad" placeholder="Edad">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="telefono">Teléfono</label>
+                    <input type="tel" class="form-control" id="telefono" placeholder="Teléfono">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="Email">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="direccion">Dirección</label>
+                <input type="text" class="form-control" id="direccion" placeholder="Dirección">
+            </div>
+            <div class="form-group">
+                <label for="pedido">Pedido</label>
+                <textarea class="form-control" id="pedido" rows="3" placeholder="Detalle del pedido"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="talla">Talla</label>
+                <select class="form-control" id="talla">
+                    <option value="">Selecciona tu talla</option>
+                    <option value="XS">XS</option>
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                    <option value="XXL">XXL</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar Pedido</button>
+        </form>
+    </div>
+
+    
+    <ul id="lista-alumno"></ul>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        // Configuración de Firebase
+       // Your web app's Firebase configuration
+        const firebaseConfig = {
+        apiKey: "AIzaSyB1GPb_j52ofhoRnj6aNoVZeCZ3O1G-2R0",
+        authDomain: "cliente-2e4ed.firebaseapp.com",
+        projectId: "cliente-2e4ed",
+        storageBucket: "cliente-2e4ed.appspot.com",
+        messagingSenderId: "985696031261",
+        appId: "1:985696031261:web:b22834429ae86f67cb6cf4"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const listaPedidos = document.getElementById("lista-pedidos");
+
+        function renderpedido(querySnapshot) {
+            listaPedidos.innerHTML = "";
+            querySnapshot.forEach(doc => {
+                const pedido = doc.data();
+                const li = document.createElement("li");
+                li.textContent = '${pedido.nombre} - ${pedido.apellido}- ${pedido.edad} - ${pedido.telefono} - ${pedido.email}- ${pedido.direccion}- ${pedido.prenda} - ${pedido.talla}';
+                const btnEliminar = document.createElement("button");
+                btnEliminar.textContent = "Eliminar";
+                btnEliminar.addEventListener("click", () => {
+                    eliminarPedido(doc.id);
+                });
+                const btnModificar = document.createElement("button");
+                btnModificar.textContent = "Modificar";
+                btnModificar.addEventListener("click", () => {
+                    modificarPedido(doc.id, pedido.nombre, pedido.apellido, pedido.edad, pedido.telefono, pedido.email, pedido.direccion, pedido.prenda, pedido.talla);
+                });
+                li.appendChild(btnEliminar);
+                li.appendChild(btnModificar);
+                listaPedidos.appendChild(li);
+            });
+        }
+
+        onSnapshot(collection(db, "pedido"), renderpedido);
+
+        const pedidoForm = document.getElementById("pedido");
+        pedidoForm.addEventListener("submit", async(e) => {
+            e.preventDefault();
+            await addDoc(collection(db, "pedido"), {
+                nombre: pedidoForm.nombre.value,
+                apellido: pedidoForm.apellido.value,
+                edad: pedidoForm.edad.value,
+                telefono: pedidoForm.telefono.value,
+                email: pedidoForm.email.value,
+                direccion: pedidoForm.direccion.value,
+                prenda: pedidoForm.prenda.value,
+                talla: pedidoForm.talla.value
+                
+            });
+            pedidoForm.reset();
+        });
+
+        async function eliminarPedido(id) {
+            try {
+                await deleteDoc(doc(db, "pedido", id));
+            } catch (error) {
+                console.error("No se pudo eliminar el pedido:", error);
+            }
+        }
+
+        async function modificarPedido(id, nombreActual, apellidoActual, edadActual, telefonoActual, emailActual, direccionActual, prendaActual, tallaActual){
+            const nuevoNombre = prompt("Ingrese su nombre:", nombreActual);
+            const nuevoApellido = prompt("Ingrese su apellido:", apellidoActual);
+            const nuevoEdad = prompt("Ingrese su edad:", apellidoActual);
+            const nuevoTelefono = prompt("Ingrese su telefono:", telefonoActual);
+            const nuevoEmail = prompt("Ingrese su E-mail:", emailActual);
+            const nuevoDireccion = prompt("Ingrese su direccion:", direccionActual);
+            const nuevoPrenda = prompt("Ingrese su Prenda:", prendaActual);
+            const nuevoTalla = prompt("seleccione su talla:", tallaActual);
+            if (nuevoNombre !== null && nuevoApellido !== null) {
+                try {
+                    await updateDoc(doc(db, "pedido", id), {
+                        nombre: nuevoNombre,
+                        aprellido: nuevoApellido,
+                        edad: nuevoEdad,
+                        telefono: nuevoTelefono,
+                        email: nuevoEmail,
+                        direccion: nuevoDireccion,
+                        prenda: nuevoPrenda,
+                        talla: nuevoTalla
+                    });
+                } catch (error) {
+                    console.error("No se puede modificar el producto:", error);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+
+
