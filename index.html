@@ -23,15 +23,15 @@
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="edad">Edad</label>
-                    <input type="text" class="form-control" id="edad" name="edad" placeholder="Edad">
+                    <input type="number" class="form-control" id="edad" name="edad" placeholder="Edad">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="telefono">Teléfono</label>
-                    <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Teléfono">
+                    <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Teléfono">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="email">Email</label>
-                    <input type="text" class="form-control" id="email" name="email" placeholder="Email">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email">
                 </div>
             </div>
             <div class="form-group">
@@ -105,17 +105,30 @@
         const pedidoForm = document.getElementById("pedido-form");
         pedidoForm.addEventListener("submit", async (e) => {
             e.preventDefault();
-            await addDoc(collection(db, "pedido"), {
-                nombre: pedidoForm.nombre.value,
-                apellido: pedidoForm.apellido.value,
-                edad: pedidoForm.edad.value,
-                telefono: pedidoForm.telefono.value,
-                email: pedidoForm.email.value,
-                direccion: pedidoForm.direccion.value,
-                pedido: pedidoForm.pedido.value,
-                talla: pedidoForm.talla.value
-            });
-            pedidoForm.reset();
+            const nombre = pedidoForm.nombre.value;
+            const apellido = pedidoForm.apellido.value;
+            const edad = pedidoForm.edad.value;
+            const telefono = pedidoForm.telefono.value;
+            const email = pedidoForm.email.value;
+            const direccion = pedidoForm.direccion.value;
+            const pedido = pedidoForm.pedido.value;
+            const talla = pedidoForm.talla.value;
+
+            try {
+                await addDoc(collection(db, "pedido"), {
+                    nombre,
+                    apellido,
+                    edad,
+                    telefono,
+                    email,
+                    direccion,
+                    pedido,
+                    talla
+                });
+                pedidoForm.reset();
+            } catch (error) {
+                console.error("Error al agregar el pedido:", error);
+            }
         });
 
         async function eliminarPedido(id) {
@@ -126,31 +139,6 @@
             }
         }
 
-        async function modificarPedido(id, nombreActual, apellidoActual, edadActual, telefonoActual, emailActual, direccionActual, pedidoActual, tallaActual) {
-            const nuevoNombre = prompt("Ingrese su nombre:", nombreActual);
-            const nuevoApellido = prompt("Ingrese su apellido:", apellidoActual);
-            const nuevaEdad = prompt("Ingrese su edad:", edadActual);
-            const nuevoTelefono = prompt("Ingrese su teléfono:", telefonoActual);
-            const nuevoEmail = prompt("Ingrese su email:", emailActual);
-            const nuevaDireccion = prompt("Ingrese su dirección:", direccionActual);
-            const nuevoPedido = prompt("Ingrese su pedido:", pedidoActual);
-            const nuevaTalla = prompt("Seleccione su talla:", tallaActual);
-            if (nuevoNombre !== null && nuevoApellido !== null) {
-                try {
-                    await updateDoc(doc(db, "pedido", id), {
-                        nombre: nuevoNombre,
-                        apellido: nuevoApellido,
-                        edad: nuevaEdad,
-                        telefono: nuevoTelefono,
-                        email: nuevoEmail,
-                        direccion: nuevaDireccion,
-                        pedido: nuevoPedido,
-                        talla: nuevaTalla
-                    });
-                } catch (error) {
-                    console.error("No hay modificacion de datos ", error);
-                }
-            }
-        }
+        async function modificarPedido(id, nombreActual, apellidoActual, edadActual, telefonoActual, emailActual, direccionActual, pedidoActual
 
 
