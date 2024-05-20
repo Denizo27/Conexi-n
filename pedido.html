@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Firebase App</title>
+    <!-- Agrega aquí el código de configuración de Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-firestore.js"></script>
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDONn8PsdOdkx4AJqExaZC3AK30O8hVbfU",
+            authDomain: "pedido-d6a54.firebaseapp.com",
+            projectId: "pedido-d6a54",
+            storageBucket: "pedido-d6a54.appspot.com",
+            messagingSenderId: "46265689524",
+            appId: "1:46265689524:web:e1e2a65efc544360b87ee1"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Obtener referencia a la colección "usuarios"
+        const db = firebase.firestore();
+        const usuariosRef = db.collection('usuarios');
+
+        // Función para guardar un usuario en la base de datos
+        function guardarUsuario() {
+            const nombre = document.getElementById('nombre').value;
+            const apellido = document.getElementById('apellido').value;
+
+            usuariosRef.add({
+                nombre: nombre,
+                apellido: apellido
+            }).then(function(docRef) {
+                console.log("Usuario registrado con ID: ", docRef.id);
+                // Limpiar los campos después de guardar
+                document.getElementById('nombre').value = '';
+                document.getElementById('apellido').value = '';
+            }).catch(function(error) {
+                console.error("Error al agregar el usuario: ", error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <!-- Formulario para agregar un nuevo usuario -->
+    <h2>Agregar Usuario</h2>
+    <form onsubmit="event.preventDefault(); guardarUsuario()">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" required><br><br>
+        <label for="apellido">Apellido:</label>
+        <input type="text" id="apellido" required><br><br>
+        <button type="submit">Guardar Usuario</button>
+    </form>
+
+    <!-- Lista de usuarios -->
+    <h2>Listado de Usuarios</h2>
+    <ul id="lista-usuarios"></ul>
+
+    <!-- Script para cargar los usuarios desde la base de datos -->
+    <script>
+        // Función para cargar los usuarios desde la base de datos
+        function cargarUsuarios() {
+            usuariosRef.get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    const usuario = doc.data();
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `Nombre: ${usuario.nombre}, Apellido: ${usuario.apellido}`;
+                    document.getElementById('lista-usuarios').appendChild(listItem);
+                });
+            });
+        }
+
+        // Cargar los usuarios al cargar la página
+        cargarUsuarios();
+    </script>
+</body>
+</html>
