@@ -18,7 +18,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         // Configuración de Firebase
         const firebaseConfig = {
@@ -40,18 +40,6 @@
                 const cliente = doc.data();
                 const li = document.createElement("li");
                 li.textContent = `${cliente.nombre} - ${cliente.apellido}`;
-                const btnEliminar = document.createElement("button");
-                btnEliminar.textContent = "Eliminar";
-                btnEliminar.addEventListener("click", () => {
-                    eliminarPedido(doc.id);
-                });
-                const btnModificar = document.createElement("button");
-                btnModificar.textContent = "Modificar";
-                btnModificar.addEventListener("click", () => {
-                    modificarPedido(doc.id, cliente.nombre, cliente.apellido);
-                });
-                li.appendChild(btnEliminar);
-                li.appendChild(btnModificar);
                 listaPedido.appendChild(li);
             });
         }
@@ -67,29 +55,7 @@
             });
             pedidoForm.reset();
         });
-
-        async function eliminarPedido(id) {
-            try {
-                await deleteDoc(doc(db, "pedido", id));
-            } catch (error) {
-                console.error("No se eliminó el pedido:", error);
-            }
-        }
-
-        async function modificarPedido(id, nombreActual, apellidoActual) {
-            const nuevoNombre = prompt("Ingrese el nuevo nombre:", nombreActual);
-            const nuevoApellido = prompt("Ingrese el nuevo apellido:", apellidoActual);
-            if (nuevoNombre !== null && nuevoApellido !== null) {
-                try {
-                    await updateDoc(doc(db, "pedido", id), {
-                        nombre: nuevoNombre,
-                        apellido: nuevoApellido
-                    });
-                } catch (error) {
-                    console.error("Error al modificar el pedido:", error);
-                }
-            }
-        }
     </script>
 </body>
 </html>
+
